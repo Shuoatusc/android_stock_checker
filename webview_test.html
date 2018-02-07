@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<html>
+<body>
+<div class="container-fluid" id="historical_chart_container">loading...</div>
+<script type="text/javascript">
+	var input_ticker=getQueryString("submit");
+	highstock_data_draw(input_ticker);
+
+	
+
+
+
+
+		function getQueryString(name) {
+    		var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+    		var r = window.location.search.substr(1).match(reg);
+    			if (r != null) {
+        			return unescape(r[2]);
+    			}
+    			return null;
+		}//getQueryString()
+
+		function highstock_data_draw(input_ticker){
+		var historical_chart_url="http://stockchecker.us-west-1.elasticbeanstalk.com/?submit="+input_ticker;
+		               $.getJSON(price_url,function(result){
+                if(Object.keys(result)[0]== "Error Message"){                  
+                  $("#historical_chart_container").html("<div class='panel panel-danger'><div class="+"panel-heading"+">Error! Failed to get historical charts data.</div></div>");
+                  return;
+                }
+                var data_array=[];
+                
+                var data_per_day= result["Time Series (Daily)"];
+                for(key in data_per_day){
+                    data_array.push(key);
+                  }
+                var highstock_data=[];
+                for(var j=0;j<1000;j++){
+                    var time_in_milliseconds=new Date(data_array[j]).getTime();
+                    //time_in_milliseconds=time_in_milliseconds.toString();
+                    try{
+                    var temp=[time_in_milliseconds,parseFloat(parseFloat(data_per_day[data_array[j]]["4. close"]).toFixed(2))];
+                  }
+                    catch(err){
+                        $("#historical_chart_container").html("<div class='panel panel-danger'><div class="+"panel-heading"+">Error! Failed to get historical charts data.</div></div>");
+                    return;
+                    }
+                    //console.log(temp);
+                    highstock_data.unshift(temp);
+                  }
+                  
+                Draw_highstock(highstock_data,input_ticker);
+        });//callback
+
+	}//highstock_data_draw
+
+	  function Draw_highstock(data,input){
+	  		alert("123");
+        if(screen.width<400){
+          var range={
+            buttons: [ {
+                type: 'month',
+                count: 1,
+                text: '1m'
+            }, {
+                type: 'month',
+                count: 3,
+                text: '3m'
+            }, {
+                type: 'month',
+                count: 6,
+                text: '6m'
+            },{
+                type: 'year',
+                count: 1,
+                text: '1y'
+            }, {
+                type: 'all',
+                text: 'All'
+            }],
+            inputEnabled: false, // it supports only days
+            selected: 3 // all
+        };
+        }
+        else{
+          var range={
+            buttons: [ {
+                type: 'week',
+                count: 1,
+                text: '1w'
+            },{
+                type: 'month',
+                count: 1,
+                text: '1m'
+            }, {
+                type: 'month',
+                count: 3,
+                text: '3m'
+            }, {
+                type: 'month',
+                count: 6,
+                text: '6m'
+            },{
+                type: 'ytd',
+                text: 'YTD'
+            },{
+                type: 'year',
+                count: 1,
+                text: '1y'
+            }, {
+                type: 'all',
+                text: 'All'
+            }],
+            selected: 0,
+            inputEnabled: true,
+        };
+        }
+        Highcharts.stockChart('historical_chart_container', {
+        chart: {
+            height: 400
+        },
+
+        title: {
+            text: input+" Stock Value"
+        },
+        tooltip: {
+                //"pointFormat": input+": {point.y:,..2f}",
+                split:false,
+            },
+
+        subtitle: {
+            "useHTML":true,
+            "text":"<a class='charts_title' href='https://www.alphavantage.co/' target='_blank'>Source: Alpha Vantage</a>"
+        },
+
+        rangeSelector: range,
+
+        series: [{
+            name: input+' Stock Price',
+            data: data,
+            type: 'area',
+            threshold: null,
+            tooltip: {
+                //"pointFormat": "{point.y:,..2f}",
+                valueDecimals: 2,
+            }
+        }],
+
+    });
+  }
+
+</script>>
+</body>
+</html>

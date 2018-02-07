@@ -1,0 +1,102 @@
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.ryanliu.hw9_v13.current">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:paddingLeft="20dp">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Stock Details"
+                android:textColor="@android:color/black"
+                android:textSize="26dp" />
+
+            <ImageView
+                android:id="@+id/facebook_icon"
+                android:layout_width="62dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@+id/textView2"
+                android:layout_alignTop="@+id/textView2"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_toLeftOf="@+id/favStar"
+                android:layout_toStartOf="@+id/favStar"
+                android:src="@drawable/facebook"
+                android:onClick="facebook_share_clicked"/>
+
+            <ImageView
+                android:id="@+id/favStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/facebook_icon"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/facebook_icon"
+                android:layout_marginEnd="14dp"
+                android:layout_marginRight="14dp"
+                android:src="@drawable/empty"
+                android:onClick="getFavClick"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="400dp">
+
+            <ProgressBar
+                android:id="@+id/progressBar_current"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/details_list"
+                android:layout_toRightOf="@+id/details_list"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/error_cur"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="Failed to load data."
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:visibility="gone"/>
+
+            <com.ryanliu.hw9_v13.NonScrollListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/details_list"
+            />
+</RelativeLayout>
+        <include
+            layout="@layout/indicator_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</RelativeLayout>
+</ScrollView>

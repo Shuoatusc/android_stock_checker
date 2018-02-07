@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/activity_main"
+    android:orientation="vertical"
+
+
+    >
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Stock Market Search"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:paddingTop="25dp"
+
+         />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/stockInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_horizontal"
+            android:paddingTop="35dp"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="15dp">
+
+        <Button
+            android:id="@+id/button_Get_Quote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="getQuoteClick"
+            android:text="Get Quote"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="22dp" />
+
+        <Button
+            android:id="@+id/button_Clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="Clear"
+            android:onClick="getClearClick"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="22dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:paddingLeft="25dp">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Favorites"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:paddingRight="35dp"/>
+
+        <Switch
+            android:id="@+id/auto_refresh_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="AutoRefresh"
+            android:textColor="@android:color/white"
+            android:textSize="18dp"
+            android:paddingLeft="15dp"/>
+
+        <ImageButton
+            android:id="@+id/Button_refresh"
+            android:layout_width="18dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            app:srcCompat="@android:drawable/ic_popup_sync"
+            android:paddingTop="10dp"
+            android:onClick="getRefreshClick"
+            android:background="?android:selectableItemBackground"
+            android:paddingRight="15dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        >
+
+        <Spinner
+            android:id="@+id/spinner_sort_by"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="30dp"
+            android:paddingRight="80dp"/>
+
+        <Spinner
+            android:id="@+id/spinner_order"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="30dp"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp">
+
+        <ProgressBar
+            android:id="@+id/progressBar_autocomplete"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/favListView"
+        android:layout_width="440sp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light" />
+
+</LinearLayout>

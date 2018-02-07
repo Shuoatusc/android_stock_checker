@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<html>
+<body>
+<div class="container-fluid" id="indicator_chart_container">loading...</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+    var input_ticker=getQueryString("submit");
+    if(input_ticker=="Price"){
+        Ajax_draw_price(input_ticker);
+    }
+            
+            
+    }//document_ready
+            
+    
+    
+	function getQueryString(name) {
+                var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) {
+                    return unescape(r[2]);
+                }
+                return null;
+    }//getQueryString()
+    
+      function Ajax_draw_price(input){
+           var price_url="http://stockchecker.us-west-1.elasticbeanstalk.com/?submit="+input;
+               $.getJSON(price_url,function(result){
+                if(Object.keys(result)[0]== "Error Message"){
+               
+                  $("#indicator_chart_container").html("<br><br><br><br><div class='panel panel-danger'><div class="+"panel-heading"+">Error! Failed to get Price data.</div></div>");
+                  return;
+                }
+                var data_array=[];
+                var date_array=[];
+                var price_array=[];
+                var volume_array=[];
+                var data_per_day= result["Time Series (Daily)"];
+                for(key in data_per_day){
+                    data_array.push(key);
+                  }
+               
+                var today_date=data_array[0];
+                var previous_day = data_array[1];
+                var today_price=parseFloat(data_per_day[today_date]["4. close"]).toFixed(2);
+                var change_data = parseFloat((data_per_day[today_date]["4. close"])-(data_per_day[previous_day]["4. close"])).toFixed(2);
+                var change_percent=Math.abs(parseFloat((data_per_day[today_date]["4. close"])-(data_per_day[previous_day]["4. close"]))/parseFloat(data_per_day[previous_day]["4. close"])*100).toFixed(2) ;
+                var previous_open =data_per_day[today_date]["1. open"];
+                var previous_close=data_per_day[previous_day]["4. close"];
+                var range=data_per_day[today_date]["3. low"]+"-"+data_per_day[today_date]["2. high"];
+                var volume=parseFloat(data_per_day[today_date]["5. volume"]).toLocaleString();
+                var price_min=parseFloat(data_per_day[data_array[0]]["4. close"]);
+                var volume_max=parseFloat(data_per_day[data_array[0]]["5. volume"]);
+
+                for (var i = 0; i < 131; i++) {
+                    date_array.unshift(data_array[i][5]+data_array[i][6]+"/"+data_array[i][8]+data_array[i][9]);
+                    price_array.unshift(parseFloat(data_per_day[data_array[i]]["4. close"]));
+                    volume_array.unshift(parseFloat(data_per_day[data_array[i]]["5. volume"]));
+                      if(parseFloat(data_per_day[data_array[i]]["5. volume"])>volume_max){
+                          volume_max=parseFloat(data_per_day[data_array[i]]["5. volume"]);
+                        }
+                      if(parseFloat(data_per_day[data_array[i]]["4. close"])<price_min){
+                          price_min=parseFloat(data_per_day[data_array[i]]["4. close"]);
+                        }
+                    }
+                data_array_overlord=date_array;
+                var volume_max_string=volume_max.toString();
+                var volume_max_length=volume_max_string.length;
+                var Highest_Digit=(volume_max_string.substr(0,1));
+                var volume_interval=(Math.pow(10,volume_max_length-1))*Highest_Digit; 
+
+                price_drawer(input,date_array,price_array,volume_array,price_min,volume_interval);
+
+        });//callback
+  }//Ajax_draw_price();
+            
+    function price_drawer(input,Date_array,Price_array,Volume_array,Price_min,volume_interval){
+
+hc_price_options={
+    exporting: {
+        url: 'http://export.highcharts.com/'
+    },
+    "chart":{
+         borderColor: 'rgb(221,221,221)',
+            //borderWidth: 2,
+            type: 'line',
+            zoomType: 'x'
+    },
+    "title":{
+      "text":input+"-Stock Price and Volume"
+   },
+   "subtitle":{
+      "useHTML":true,
+      "text":"<a class='charts_title' href='https://www.alphavantage.co/' target='_blank'>Source: Alpha Vantage</a>"
+   },
+   "yAxis":[
+      
+       {
+           //alignTicks:false,
+           "allowDecimals":false,
+           "title":{
+            "text":"Stock Price"
+         },
+           "min":Price_min-10,
+           //"min":0,
+           "tickInterval":5,
+         "labels":{
+            //"format":"{value:,.2f}"
+         },
+         //"min":price_min-20,
+         //"max":price_max+10
+      },
+      {
+          "title":{
+            "text":"Volume"
+         },
+         "opposite":true,
+          //"tickInterval":volume_max*4,
+         //"max":volume_interval*5,
+          "tickInterval":volume_interval
+      }
+   ],
+   "xAxis":{
+      "categories":Date_array,
+      "tickInterval":10
+   },
+    //"legend":{
+      //  align: 'right',
+        //verticalAlign: 'middle',
+        //layout: 'vertical',
+        
+    //},
+   "series":[
+      {
+         "type":"area",
+         "name":input,
+         "data":Price_array,
+         "threshold":null,
+         "yAxis":0,
+         "tooltip":{
+            //"pointFormat":symbol_name
+             //: {point.y:,..2f}"
+         valueDecimals:2
+         },
+         "color":"#f37f81",
+         "marker":{
+            "enabled":false,
+         }
+      },
+      {
+         "type":"column",
+         "name":input+" "+"Volume",
+         "data":Volume_array,
+         "yAxis":1,
+         "color":"white",
+      }
+   ]
+};
+Highcharts.chart('indicator_chart_container', hc_price_options);
+}//price_drawer();
+
+
+
+</script>
+</body>
+</html>
